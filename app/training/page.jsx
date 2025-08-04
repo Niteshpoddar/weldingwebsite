@@ -5,41 +5,19 @@ export const metadata = {
   description: 'On-site training, installation support, and maintenance services for industrial roller systems and equipment.',
 }
 
-export default function TrainingPage() {
-  const services = [
-    {
-      id: 1,
-      name: 'Installation & Commissioning',
-      duration: 'On-site',
-      level: 'Technical',
-      description: 'Professional installation supervision and alignment of supplied roller systems.',
-      topics: ['Roller Installation', 'Alignment Procedures', 'System Integration', 'Performance Testing']
-    },
-    {
-      id: 2,
-      name: 'Maintenance Training',
-      duration: '1-2 days',
-      level: 'Operator',
-      description: 'Basic preventive maintenance training for plant operators and maintenance teams.',
-      topics: ['Routine Maintenance', 'Troubleshooting', 'Safety Procedures', 'Performance Monitoring']
-    },
-    {
-      id: 3,
-      name: 'Technical Consultation',
-      duration: 'As needed',
-      level: 'Engineering',
-      description: 'Expert consultation on roller selection, application optimization, and performance improvement.',
-      topics: ['Application Analysis', 'Material Selection', 'Performance Optimization', 'Cost Reduction']
-    },
-    {
-      id: 4,
-      name: 'Repair & Refurbishing',
-      duration: 'Service',
-      level: 'Professional',
-      description: 'Complete repair solutions and refurbishing services for worn or damaged rollers.',
-      topics: ['Damage Assessment', 'Repair Procedures', 'Re-coating Services', 'Quality Assurance']
+export default async function TrainingPage() {
+  // Fetch training services from API
+  let services = [];
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/admin/trainings`, {
+      cache: 'no-store'
+    });
+    if (response.ok) {
+      services = await response.json();
     }
-  ]
+  } catch (error) {
+    console.error('Error fetching training services:', error);
+  }
 
   const serviceTypes = [
     {
