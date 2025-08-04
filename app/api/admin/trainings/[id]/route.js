@@ -2,9 +2,19 @@ import { NextResponse } from 'next/server';
 import { trainingsStore } from '../../../../../lib/data-store';
 import { ObjectId } from 'mongodb';
 
+// Helper function to convert string ID to ObjectId or keep as string
+function parseId(id) {
+  try {
+    return new ObjectId(id);
+  } catch (error) {
+    // If it's not a valid ObjectId, treat it as a string ID (for fallback mode)
+    return id;
+  }
+}
+
 export async function GET(request, { params }) {
   try {
-    const training = await trainingsStore.getById(new ObjectId(params.id));
+    const training = await trainingsStore.getById(parseId(params.id));
     
     if (!training) {
       return NextResponse.json(
@@ -34,7 +44,7 @@ export async function PUT(request, { params }) {
       );
     }
     
-    const updatedTraining = await trainingsStore.update(new ObjectId(params.id), trainingData);
+    const updatedTraining = await trainingsStore.update(parseId(params.id), trainingData);
     
     if (updatedTraining) {
       return NextResponse.json(updatedTraining);
@@ -54,7 +64,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const success = await trainingsStore.delete(new ObjectId(params.id));
+    const success = await trainingsStore.delete(parseId(params.id));
     
     if (success) {
       return NextResponse.json({ success: true });
