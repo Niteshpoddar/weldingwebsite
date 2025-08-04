@@ -102,18 +102,26 @@ The middleware (`middleware.js`) protects all admin routes:
 
 ## Data Storage
 
-### File Structure
-```
-data/
-├── jobs.json      # Job postings data
-└── trainings.json # Training services data
+### MongoDB Atlas
+The application uses MongoDB Atlas for data storage:
+- Database: `welding_company`
+- Collections: `jobs`, `trainings`
+- Automatic sample data initialization when collections are empty
+
+### Environment Variables
+Create a `.env.local` file with your MongoDB Atlas connection string:
+```env
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/welding_company?retryWrites=true&w=majority
+ADMIN_EMAIL=admin@weldingcompany.com
+ADMIN_PASSWORD=admin123
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
 ### Automatic Initialization
 The data store automatically:
-- Creates the `data/` directory if it doesn't exist
-- Initializes JSON files with sample data if they don't exist
-- Handles file read/write operations with error handling
+- Connects to MongoDB Atlas using the provided connection string
+- Initializes collections with sample data if they're empty
+- Handles database operations with error handling
 
 ## Public Pages Integration
 
@@ -169,10 +177,11 @@ NEXT_PUBLIC_BASE_URL=https://yourdomain.com
 ```
 
 ### Database Integration
-The current implementation uses JSON files for simplicity. For production, consider:
-- PostgreSQL or MongoDB for data storage
-- User authentication with NextAuth.js or similar
-- Role-based access control for multiple admins
+The application now uses MongoDB Atlas for data storage:
+- MongoDB Atlas cloud database
+- Collections for jobs and training services
+- Automatic sample data initialization
+- Scalable and production-ready
 
 ### Security Enhancements
 - Implement rate limiting on login attempts
@@ -191,27 +200,34 @@ The current implementation uses JSON files for simplicity. For production, consi
    - Clear browser cache if needed
 
 2. **Data not saving**
-   - Check file permissions on `data/` directory
-   - Ensure the application has write access
+   - Verify MongoDB Atlas connection string in `.env.local`
+   - Check network connectivity to MongoDB Atlas
+   - Ensure database user has read/write permissions
    - Check console for error messages
 
 3. **Public pages not showing data**
    - Verify API endpoints are working
    - Check network requests in browser dev tools
-   - Ensure data files exist and are valid JSON
+   - Ensure MongoDB Atlas connection is working
+   - Check database collections exist and have data
 
 ### Debug Mode
 Add `console.log` statements in the data store functions to debug data operations:
 ```javascript
 // In lib/data-store.js
-function writeJobs(jobs) {
-  try {
-    console.log('Writing jobs:', jobs);
-    fs.writeFileSync(JOBS_FILE, JSON.stringify(jobs, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error writing jobs file:', error);
-    return false;
+export const jobsStore = {
+  getAll: async () => {
+    try {
+      console.log('Fetching jobs from MongoDB...');
+      const db = await getDb();
+      await initializeSampleData();
+      const jobs = await db.collection(JOBS_COLLECTION).find({}).toArray();
+      console.log('Jobs fetched:', jobs);
+      return jobs;
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      return [];
+    }
   }
 }
 ```

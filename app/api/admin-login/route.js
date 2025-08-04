@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-// Hardcoded admin credentials (in production, use environment variables)
-const ADMIN_EMAIL = 'admin@weldingcompany.com';
-const ADMIN_PASSWORD = 'admin123';
+// Admin credentials from environment variables
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@weldingcompany.com';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 export async function POST(request) {
   try {

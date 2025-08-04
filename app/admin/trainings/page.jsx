@@ -44,7 +44,7 @@ export default function TrainingsManagement() {
       });
 
       if (response.ok) {
-        setTrainings(trainings.filter(training => training.id !== id));
+        setTrainings(trainings.filter(training => training._id !== id));
       } else {
         alert('Failed to delete training');
       }
@@ -136,19 +136,19 @@ export default function TrainingsManagement() {
                   </div>
                   <div className="flex space-x-2 ml-4">
                     <button
-                      onClick={() => router.push(`/admin/trainings/${training.id}/edit`)}
+                      onClick={() => router.push(`/admin/trainings/${training._id}/edit`)}
                       className="p-2 text-gray-400 hover:text-green-600 transition-colors"
                       title="Edit training"
                     >
                       <PencilIcon className="h-5 w-5" />
                     </button>
                     <button
-                      onClick={() => handleDelete(training.id)}
-                      disabled={deleteLoading === training.id}
+                      onClick={() => handleDelete(training._id)}
+                      disabled={deleteLoading === training._id}
                       className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
                       title="Delete training"
                     >
-                      {deleteLoading === training.id ? (
+                      {deleteLoading === training._id ? (
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
                       ) : (
                         <TrashIcon className="h-5 w-5" />

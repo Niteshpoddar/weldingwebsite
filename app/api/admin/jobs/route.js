@@ -3,7 +3,7 @@ import { jobsStore } from '../../../../lib/data-store';
 
 export async function GET() {
   try {
-    const jobs = jobsStore.getAll();
+    const jobs = await jobsStore.getAll();
     return NextResponse.json(jobs);
   } catch (error) {
     return NextResponse.json(
@@ -25,7 +25,7 @@ export async function POST(request) {
       );
     }
     
-    const newJob = jobsStore.create(jobData);
+    const newJob = await jobsStore.create(jobData);
     
     if (newJob) {
       return NextResponse.json(newJob, { status: 201 });

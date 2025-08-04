@@ -3,7 +3,7 @@ import { trainingsStore } from '../../../../lib/data-store';
 
 export async function GET() {
   try {
-    const trainings = trainingsStore.getAll();
+    const trainings = await trainingsStore.getAll();
     return NextResponse.json(trainings);
   } catch (error) {
     return NextResponse.json(
@@ -25,7 +25,7 @@ export async function POST(request) {
       );
     }
     
-    const newTraining = trainingsStore.create(trainingData);
+    const newTraining = await trainingsStore.create(trainingData);
     
     if (newTraining) {
       return NextResponse.json(newTraining, { status: 201 });

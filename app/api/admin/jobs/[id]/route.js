@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { jobsStore } from '../../../../../lib/data-store';
+import { ObjectId } from 'mongodb';
 
 export async function GET(request, { params }) {
   try {
-    const job = jobsStore.getById(params.id);
+    const job = await jobsStore.getById(new ObjectId(params.id));
     
     if (!job) {
       return NextResponse.json(
@@ -33,7 +34,7 @@ export async function PUT(request, { params }) {
       );
     }
     
-    const updatedJob = jobsStore.update(params.id, jobData);
+    const updatedJob = await jobsStore.update(new ObjectId(params.id), jobData);
     
     if (updatedJob) {
       return NextResponse.json(updatedJob);
@@ -53,7 +54,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const success = jobsStore.delete(params.id);
+    const success = await jobsStore.delete(new ObjectId(params.id));
     
     if (success) {
       return NextResponse.json({ success: true });
