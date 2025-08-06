@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sendTrainingRegistrationEmail } from '../../../lib/mailer'
+import dbConnect from '../../../lib/db'
+import TrainingRegistration from '../../../lib/models/TrainingRegistration'
 
 export async function POST(req) {
   try {
@@ -39,6 +41,22 @@ export async function POST(req) {
         { status: 400 }
       )
     }
+
+    // Connect to database
+    await dbConnect()
+
+    // Save to database
+    const trainingRegistration = new TrainingRegistration({
+      name,
+      email,
+      phone,
+      company,
+      course,
+      trainingType,
+      participants,
+      message
+    })
+    await trainingRegistration.save()
 
     // Send email
     const emailResult = await sendTrainingRegistrationEmail({

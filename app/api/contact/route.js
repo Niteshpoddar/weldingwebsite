@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sendContactEmail } from '../../../lib/mailer'
+import dbConnect from '../../../lib/db'
+import ContactMessage from '../../../lib/models/ContactMessage'
 
 export async function POST(req) {
   try {
@@ -37,6 +39,19 @@ export async function POST(req) {
         )
       }
     }
+
+    // Connect to database
+    await dbConnect()
+
+    // Save to database
+    const contactMessage = new ContactMessage({
+      name,
+      email,
+      phone,
+      company,
+      message
+    })
+    await contactMessage.save()
 
     // Send email
     const emailResult = await sendContactEmail({

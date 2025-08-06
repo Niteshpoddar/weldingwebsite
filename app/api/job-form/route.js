@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sendJobApplicationEmail } from '../../../lib/mailer'
+import dbConnect from '../../../lib/db'
+import JobApplication from '../../../lib/models/JobApplication'
 
 export async function POST(request) {
   try {
@@ -55,6 +57,25 @@ export async function POST(request) {
         )
       }
     }
+
+    // Connect to database
+    await dbConnect()
+
+    // Save to database
+    const jobApplication = new JobApplication({
+      name,
+      email,
+      phone,
+      position,
+      experience,
+      coverLetter,
+      resume: resume ? {
+        filename: resume.name,
+        originalName: resume.name,
+        path: `/uploads/resumes/${resume.name}`
+      } : null
+    })
+    await jobApplication.save()
 
     // Send email
     const emailResult = await sendJobApplicationEmail({
