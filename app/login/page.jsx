@@ -1,110 +1,110 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import Link from 'next/link';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
-export default function AdminLogin() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/admin/dashboard';
+export default function LoginPage() {
+  const [credentials, setCredentials] = useState({ username: '', password: '' })
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const router = useRouter()
 
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-    setIsPending(true);
-
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
-
-    try {
-      const res = await fetch('/api/admin-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (res.ok) {
-        router.replace(callbackUrl);
-      } else {
-        setError('Invalid credentials');
-      }
-    } catch {
-      setError('Something went wrong.');
-    } finally {
-      setIsPending(false);
+    // Simple authentication - in production, use proper auth
+    if (credentials.username === 'admin' && credentials.password === 'admin123') {
+      // Set a simple session cookie
+      document.cookie = 'admin-session=true; path=/; max-age=86400' // 24 hours
+      router.push('/admin')
+    } else {
+      setError('Invalid credentials')
     }
+    
+    setLoading(false)
   }
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-lg shadow-xl px-8 py-10 w-full max-w-md"
-      >
-        <h1 className="mb-6 text-2xl font-bold text-center">Please log in to continue.</h1>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-xs font-semibold text-gray-700 mb-2">
-            Email
-          </label>
-          <div className="relative">
-            <AtSymbolIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              placeholder="Enter your email address"
-              className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            />
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Admin Login
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Sign in to access the admin dashboard
+          </p>
         </div>
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-xs font-semibold text-gray-700 mb-2">
-            Password
-          </label>
-          <div className="relative">
-            <KeyIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              minLength={6}
-              placeholder="Enter password"
-              className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            />
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="username" className="sr-only">
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Username"
+                value={credentials.username}
+                onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+              />
+            </div>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={credentials.password}
+                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
+            </div>
           </div>
-        </div>
-        <input type="hidden" name="redirectTo" value={callbackUrl} />
-        <button
-            type="submit"
-            className="w-full bg-gray-700 hover:bg-gray-900 text-white py-2 rounded flex items-center justify-center font-semibold transition"
-            disabled={isPending}
-            >
-            Log in
-            <ArrowRightIcon className="ml-2 h-5 w-5 text-gray-50" />
-        </button>
-        {/* Error Message */}
-        <div
-          className="flex items-center min-h-[24px] mt-2"
-          aria-live="polite"
-          aria-atomic="true"
-        >
+
           {error && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500 mr-1" />
-              <span className="text-sm text-red-500">{error}</span>
-            </>
+            <div className="text-red-600 text-sm text-center">{error}</div>
           )}
-        </div>
-      </form>
-    </section>
-  );
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
+
+          <div className="text-center text-sm text-gray-500">
+            <p>Demo credentials:</p>
+            <p>Username: admin</p>
+            <p>Password: admin123</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 }
