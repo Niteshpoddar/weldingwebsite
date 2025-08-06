@@ -5,49 +5,19 @@ export const metadata = {
   description: 'Join our growing team of skilled professionals in industrial roller manufacturing and engineering. Explore career opportunities in Gujarat.',
 }
 
-export default function CareersPage() {
-  const jobOpenings = [
-    {
-      id: 1,
-      title: 'Sales Engineer',
-      department: 'Sales',
-      location: 'Ahmedabad / Field',
-      type: 'Full-time',
-      experience: '2+ years',
-      description: 'Drive sales growth in industrial roller markets with technical expertise and client relationship management.',
-      requirements: ['Diploma/Degree in Engineering', '2+ years sales experience', 'Knowledge of industrial markets', 'Client relationship skills']
-    },
-    {
-      id: 2,
-      title: 'Quality Inspector',
-      department: 'Quality Control',
-      location: 'Ahmedabad Factory',
-      type: 'Full-time', 
-      experience: '1-3 years',
-      description: 'Ensure product quality through inspection, testing, and quality control procedures.',
-      requirements: ['Mechanical/Industrial background', 'QC experience preferred', 'Basic metrology knowledge', 'Attention to detail']
-    },
-    {
-      id: 3,
-      title: 'Roller Technician',
-      department: 'Production',
-      location: 'Ahmedabad Factory',
-      type: 'Full-time',
-      experience: '2+ years',
-      description: 'Skilled technician for rubber roller manufacturing, covering, and maintenance operations.',
-      requirements: ['Experience in roller manufacturing', 'Rubber covering knowledge', 'Mechanical skills', 'Quality consciousness']
-    },
-    {
-      id: 4,
-      title: 'Machine Operator',
-      department: 'Production',
-      location: 'Ahmedabad Factory',
-      type: 'Full-time',
-      experience: '1+ years',
-      description: 'Operate precision machines for roller manufacturing and component fabrication.',
-      requirements: ['Machine operation experience', 'Technical aptitude', 'Safety consciousness', 'Team collaboration']
+export default async function CareersPage() {
+  // Fetch jobs from API
+  let jobOpenings = [];
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/admin/jobs`, {
+      cache: 'no-store'
+    });
+    if (response.ok) {
+      jobOpenings = await response.json();
     }
-  ]
+  } catch (error) {
+    console.error('Error fetching jobs:', error);
+  }
 
   const benefits = [
     {
