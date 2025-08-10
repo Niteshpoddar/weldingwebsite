@@ -1,53 +1,29 @@
 import Link from 'next/link'
+import { connectToDatabase } from '../dbconfig/dbconfig'
+import Job from '../models/jobmodels'
 
 export const metadata = {
   title: 'Careers - Join Bajrang Industries',
   description: 'Join our growing team of skilled professionals in industrial roller manufacturing and engineering. Explore career opportunities in Gujarat.',
 }
 
-export default function CareersPage() {
-  const jobOpenings = [
-    {
-      id: 1,
-      title: 'Sales Engineer',
-      department: 'Sales',
-      location: 'Ahmedabad / Field',
-      type: 'Full-time',
-      experience: '2+ years',
-      description: 'Drive sales growth in industrial roller markets with technical expertise and client relationship management.',
-      requirements: ['Diploma/Degree in Engineering', '2+ years sales experience', 'Knowledge of industrial markets', 'Client relationship skills']
-    },
-    {
-      id: 2,
-      title: 'Quality Inspector',
-      department: 'Quality Control',
-      location: 'Ahmedabad Factory',
-      type: 'Full-time', 
-      experience: '1-3 years',
-      description: 'Ensure product quality through inspection, testing, and quality control procedures.',
-      requirements: ['Mechanical/Industrial background', 'QC experience preferred', 'Basic metrology knowledge', 'Attention to detail']
-    },
-    {
-      id: 3,
-      title: 'Roller Technician',
-      department: 'Production',
-      location: 'Ahmedabad Factory',
-      type: 'Full-time',
-      experience: '2+ years',
-      description: 'Skilled technician for rubber roller manufacturing, covering, and maintenance operations.',
-      requirements: ['Experience in roller manufacturing', 'Rubber covering knowledge', 'Mechanical skills', 'Quality consciousness']
-    },
-    {
-      id: 4,
-      title: 'Machine Operator',
-      department: 'Production',
-      location: 'Ahmedabad Factory',
-      type: 'Full-time',
-      experience: '1+ years',
-      description: 'Operate precision machines for roller manufacturing and component fabrication.',
-      requirements: ['Machine operation experience', 'Technical aptitude', 'Safety consciousness', 'Team collaboration']
-    }
-  ]
+export default async function CareersPage() {
+  await connectToDatabase();
+
+  // Fetch job openings from MongoDB
+  const jobsFromDb = await Job.find().lean();
+
+  // Convert MongoDB _id and any Date fields if necessary, e.g.:
+  const jobOpenings = jobsFromDb.map(job => ({
+    id: job._id.toString(),
+    title: job.title,
+    department: job.department,
+    location: job.location,
+    type: job.type,
+    experience: job.experience,
+    description: job.description,
+    requirements: job.requirements,
+  }));
 
   const benefits = [
     {

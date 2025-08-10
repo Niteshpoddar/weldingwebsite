@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
 import { sendContactEmail } from '../../../lib/mailer'
+import { connectToDatabase } from "../../dbconfig/dbconfig";
+import ContactQuery from '../../models/contactQuery';
+
+await connectToDatabase();
 
 export async function POST(req) {
   try {
@@ -48,6 +52,14 @@ export async function POST(req) {
     })
 
     if (emailResult.success) {
+      const newQuery = new ContactQuery({
+      fullName: name,
+      email,
+      companyName: company,
+      phone,
+      message
+      });
+      await newQuery.save();
       return NextResponse.json({
         success: true,
         message: 'Message sent successfully'

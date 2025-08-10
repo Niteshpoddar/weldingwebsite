@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
 import { sendTrainingRegistrationEmail } from '../../../lib/mailer'
+import { connectToDatabase } from "../../dbconfig/dbconfig";
+import TrainingApplication from '../../models/trainingApplication';
+
+await connectToDatabase();
 
 export async function POST(req) {
   try {
@@ -53,6 +57,19 @@ export async function POST(req) {
     })
 
     if (emailResult.success) {
+      const newTraining = new TrainingApplication({
+        fullName: name,
+        email,
+        companyName: company,
+        phone,
+        trainingCourse: course,
+        trainingFormat: trainingType,
+        numberOfParticipants: participants,
+        additionalRequirement: message
+      });
+
+      
+      await newTraining.save()
       return NextResponse.json({
         success: true,
         message: 'Training registration submitted successfully'

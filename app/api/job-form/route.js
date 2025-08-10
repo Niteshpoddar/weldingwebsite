@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
 import { sendJobApplicationEmail } from '../../../lib/mailer'
+import JobApplication from '../../models/jobApplication'
+import { connectToDatabase } from "../../dbconfig/dbconfig";
+
+await connectToDatabase();
 
 export async function POST(request) {
   try {
@@ -68,6 +72,17 @@ export async function POST(request) {
     })
 
     if (emailResult.success) {
+      const newJob = new JobApplication({
+        fullName: name,
+        email,
+        phone,
+        position,
+        yearsOfExperience: experience,
+        coverLetterText: coverLetter,
+        // resumeUrl: resumeUrl // the URL after upload
+      });
+
+      await newJob.save()
       return NextResponse.json({
         success: true,
         message: 'Application submitted successfully'

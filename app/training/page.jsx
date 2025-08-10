@@ -1,45 +1,28 @@
-import RegisterScrollButton from '../../components/RegisterScrollButton'
-import Link from 'next/link'
+import Link from 'next/link';
+import RegisterScrollButton from '../../components/RegisterScrollButton';
+import { connectToDatabase } from '../dbconfig/dbconfig';
+import Training from '../models/trainingmodels'; // Your Mongoose model for training services
+
 export const metadata = {
   title: 'Training & Support - Technical Services',
   description: 'On-site training, installation support, and maintenance services for industrial roller systems and equipment.',
-}
+};
 
-export default function TrainingPage() {
-  const services = [
-    {
-      id: 1,
-      name: 'Installation & Commissioning',
-      duration: 'On-site',
-      level: 'Technical',
-      description: 'Professional installation supervision and alignment of supplied roller systems.',
-      topics: ['Roller Installation', 'Alignment Procedures', 'System Integration', 'Performance Testing']
-    },
-    {
-      id: 2,
-      name: 'Maintenance Training',
-      duration: '1-2 days',
-      level: 'Operator',
-      description: 'Basic preventive maintenance training for plant operators and maintenance teams.',
-      topics: ['Routine Maintenance', 'Troubleshooting', 'Safety Procedures', 'Performance Monitoring']
-    },
-    {
-      id: 3,
-      name: 'Technical Consultation',
-      duration: 'As needed',
-      level: 'Engineering',
-      description: 'Expert consultation on roller selection, application optimization, and performance improvement.',
-      topics: ['Application Analysis', 'Material Selection', 'Performance Optimization', 'Cost Reduction']
-    },
-    {
-      id: 4,
-      name: 'Repair & Refurbishing',
-      duration: 'Service',
-      level: 'Professional',
-      description: 'Complete repair solutions and refurbishing services for worn or damaged rollers.',
-      topics: ['Damage Assessment', 'Repair Procedures', 'Re-coating Services', 'Quality Assurance']
-    }
-  ]
+export default async function TrainingPage() {
+  await connectToDatabase();
+
+  // Fetch services dynamically from MongoDB
+  const servicesFromDb = await Training.find().lean();
+
+  // Map the data to plain objects if needed (convert _id to string etc.)
+  const services = servicesFromDb.map(service => ({
+    id: service._id.toString(),
+    name: service.name,
+    duration: service.duration,
+    level: service.level,
+    description: service.description,
+    topics: service.topics,
+  }));
 
   const serviceTypes = [
     {
