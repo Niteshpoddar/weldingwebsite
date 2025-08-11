@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Training Form API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Training Form API</h1>
+        <p>This page tests the training form API to ensure resume uploads are working correctly.</p>
+        
+        <form id="trainingForm">
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input type="text" id="fullName" name="fullName" value="Test User" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone *</label>
+                <input type="tel" id="phone" name="phone" value="+1234567890" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="company">Company *</label>
+                <input type="text" id="company" name="company" value="Test Company" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="trainingCourse">Training Course *</label>
+                <select id="trainingCourse" name="trainingCourse" required>
+                    <option value="Safety & Compliance">Safety & Compliance</option>
+                    <option value="Quality Control">Quality Control</option>
+                    <option value="Equipment Maintenance">Equipment Maintenance</option>
+                    <option value="Custom Training">Custom Training</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="numberOfParticipants">Number of Participants *</label>
+                <input type="number" id="numberOfParticipants" name="numberOfParticipants" value="1" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="trainingFormat">Training Format *</label>
+                <select id="trainingFormat" name="trainingFormat" required>
+                    <option value="On-site">On-site</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Workshop">Workshop</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalRequirement">Additional Requirements</label>
+                <textarea id="additionalRequirement" name="additionalRequirement" rows="3" placeholder="Any specific requirements or questions...">Test message for training requirements</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="file">Resume (PDF) *</label>
+                <input type="file" id="file" name="file" accept=".pdf" required>
+                <small>Only PDF files are allowed (max 5MB)</small>
+            </div>
+            
+            <button type="submit">Submit Training Application</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('trainingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Submitting...';
+            resultDiv.className = 'result';
+            
+            try {
+                const formData = new FormData();
+                
+                // Add all form fields
+                formData.append('fullName', document.getElementById('fullName').value);
+                formData.append('email', document.getElementById('email').value);
+                formData.append('phone', document.getElementById('phone').value);
+                formData.append('company', document.getElementById('company').value);
+                formData.append('trainingCourse', document.getElementById('trainingCourse').value);
+                formData.append('numberOfParticipants', document.getElementById('numberOfParticipants').value);
+                formData.append('trainingFormat', document.getElementById('trainingFormat').value);
+                formData.append('additionalRequirement', document.getElementById('additionalRequirement').value);
+                
+                // Add file
+                const fileInput = document.getElementById('file');
+                if (fileInput.files[0]) {
+                    formData.append('file', fileInput.files[0]);
+                } else {
+                    throw new Error('Please select a PDF file');
+                }
+                
+                const response = await fetch('/api/training-resume-upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `✅ Success!\n\nApplication ID: ${result.applicationId}\nResume URL: ${result.resumeUrl}\nCloudinary ID: ${result.cloudinaryId}\n\nMessage: ${result.message}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    throw new Error(result.error || 'Unknown error occurred');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+                resultDiv.className = 'result error';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

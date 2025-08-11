@@ -68,6 +68,7 @@ export default function NewJob() {
           ...formData,
           requirements: cleanRequirements
         }),
+        credentials: 'include'
       });
 
       if (response.ok) {

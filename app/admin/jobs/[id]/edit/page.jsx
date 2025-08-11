@@ -20,35 +20,26 @@ export default function EditJob() {
   });
 
   useEffect(() => {
-    fetchJob();
-  }, []);
-
-  const fetchJob = async () => {
-    try {
-      const response = await fetch(`/api/admin/jobs/${params.id}`);
-      if (response.ok) {
-        const job = await response.json();
-        setFormData({
-          title: job.title || '',
-          department: job.department || '',
-          location: job.location || '',
-          type: job.type || 'Full-time',
-          experience: job.experience || '',
-          description: job.description || '',
-          requirements: job.requirements && job.requirements.length > 0 ? job.requirements : ['']
-        });
-      } else {
-        alert('Job not found');
+    const fetchJob = async () => {
+      try {
+        const response = await fetch(`/api/admin/jobs/${params.id}`, { credentials: 'include' });
+        if (response.ok) {
+          const job = await response.json();
+          setFormData(job);
+        } else {
+          alert('Job not found');
+          router.push('/admin/jobs');
+        }
+      } catch (error) {
+        console.error('Error fetching job:', error);
+        alert('Error loading job');
         router.push('/admin/jobs');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching job:', error);
-      alert('Error loading job');
-      router.push('/admin/jobs');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchJob();
+  }, [params.id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -101,6 +92,7 @@ export default function EditJob() {
           ...formData,
           requirements: cleanRequirements
         }),
+        credentials: 'include'
       });
 
       if (response.ok) {

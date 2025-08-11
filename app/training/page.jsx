@@ -2,6 +2,11 @@ import Link from 'next/link';
 import RegisterScrollButton from '../../components/RegisterScrollButton';
 import { connectToDatabase } from '../dbconfig/dbconfig';
 import Training from '../models/trainingmodels'; // Your Mongoose model for training services
+import { 
+  BuildingOffice2Icon, 
+  ComputerDesktopIcon, 
+  WrenchScrewdriverIcon 
+} from '@heroicons/react/24/outline'
 
 export const metadata = {
   title: 'Training & Support - Technical Services',
@@ -27,19 +32,19 @@ export default async function TrainingPage() {
   const serviceTypes = [
     {
       type: 'On-site Services',
-      icon: '🏭',
+      icon: BuildingOffice2Icon,
       description: 'Technical services delivered at your facility',
       benefits: ['No production interruption', 'Customized solutions', 'Immediate support', 'Cost-effective']
     },
     {
       type: 'Remote Support',
-      icon: '💻',
+      icon: ComputerDesktopIcon,
       description: 'Technical consultation via phone and video',
       benefits: ['Quick response', 'Cost-effective', 'Expert guidance', 'Documentation support']
     },
     {
       type: 'Workshop Services',
-      icon: '🔧',
+      icon: WrenchScrewdriverIcon,
       description: 'Comprehensive repair and refurbishing at our facility',
       benefits: ['Advanced equipment', 'Quality control', 'Faster turnaround', 'Performance testing']
     }
@@ -47,18 +52,29 @@ export default async function TrainingPage() {
 
   return (
     <div className="pt-20 lg:pt-24">
+      {/* Breadcrumbs */}
+      <div className="container-custom py-4">
+        <nav className="flex items-center space-x-2 text-sm text-primary-600 animate-fade-in">
+          <Link href="/" className="hover:text-primary-800 transition-colors duration-200">
+            Home
+          </Link>
+          <span>/</span>
+          <span className="text-primary-900 font-medium">Training & Support</span>
+        </nav>
+      </div>
+
       {/* Hero Section */}
-      <section className="py-20 lg:py-32 bg-gradient-to-br from-primary-50 to-luxury-pearl">
+      <section className="py-20 lg:py-32 hero-gradient">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-900 mb-8">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-900 mb-8 hero-title">
               Training & Support
             </h1>
-            <p className="text-xl lg:text-2xl text-primary-600 mb-12 leading-relaxed">
+            <p className="text-xl lg:text-2xl text-primary-700 mb-12 leading-relaxed hero-subtitle">
               Comprehensive technical support services including on-site training, installation supervision, 
               and maintenance consultation for optimal roller performance and extended service life.
             </p>
-            <a href="#services" className="btn-primary text-lg px-8 py-4">
+            <a href="#services" className="btn-primary text-lg px-8 py-4 hero-cta">
               Our Services
             </a>
           </div>
@@ -66,27 +82,27 @@ export default async function TrainingPage() {
       </section>
 
       {/* Service Types */}
-      <section className="py-20 lg:py-32">
+      <section className="py-20 lg:py-32 section-bg">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-primary-900 mb-6">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-4xl lg:text-5xl font-bold text-primary-900 mb-6 animate-slide-up" style={{ animationDelay: '100ms' }}>
               Service Options
             </h2>
-            <p className="text-lg lg:text-xl text-primary-600 max-w-3xl mx-auto">
+            <p className="text-lg lg:text-xl text-primary-700 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: '200ms' }}>
               Choose the service format that best fits your operational requirements and schedule.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {serviceTypes.map((service) => (
-              <div key={service.type} className="card p-8 text-center group hover:shadow-lg transition-all duration-300">
-                <div className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">
-                  {service.icon}
+            {serviceTypes.map((service, index) => (
+              <div key={service.type} className="card p-8 text-center group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 transform hover:scale-105 animate-scale-in" style={{ animationDelay: `${(index + 1) * 100}ms` }}>
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-amber-50 to-amber-100 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:from-amber-100 group-hover:to-amber-200 transition-all duration-300 shadow-lg">
+                  <service.icon className="w-8 h-8 text-red-700" />
                 </div>
-                <h3 className="text-xl font-bold text-primary-900 mb-4">
+                <h3 className="text-xl font-bold text-red-800 mb-4">
                   {service.type}
                 </h3>
-                <p className="text-primary-600 mb-6 leading-relaxed">
+                <p className="text-red-700 mb-6 leading-relaxed">
                   {service.description}
                 </p>
                 <ul className="space-y-2">
@@ -104,20 +120,20 @@ export default async function TrainingPage() {
       </section>
 
       {/* Available Services */}
-      <section id="services" className="py-20 lg:py-32 bg-white">
+      <section id="services" className="py-20 lg:py-32 accent-bg">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-primary-900 mb-6">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-4xl lg:text-5xl font-bold text-primary-900 mb-6 animate-slide-up" style={{ animationDelay: '100ms' }}>
               Available Services
             </h2>
-            <p className="text-lg lg:text-xl text-primary-600 max-w-3xl mx-auto">
+            <p className="text-lg lg:text-xl text-primary-700 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: '200ms' }}>
               Comprehensive support services designed by our technical experts to maximize your roller system performance.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {services.map((service) => (
-              <div key={service.id} className="card p-8 h-full flex flex-col group hover:shadow-lg transition-all duration-300">
+            {services.map((service, index) => (
+              <div key={service.id} className="card p-8 h-full flex flex-col group hover:shadow-xl hover:-translate-y-2 transition-all duration-300 transform hover:scale-105 animate-slide-up" style={{ animationDelay: `${(index + 1) * 100}ms` }}>
                 <div className="flex-grow">
                   <div className="flex items-center justify-between mb-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -137,7 +153,7 @@ export default async function TrainingPage() {
                     {service.name}
                   </h3>
 
-                  <p className="text-primary-600 mb-6 leading-relaxed">
+                  <p className="text-primary-700 mb-6 leading-relaxed">
                     {service.description}
                   </p>
 
@@ -165,21 +181,21 @@ export default async function TrainingPage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 lg:py-32">
+      <section id="contact" className="py-20 lg:py-32 bg-gradient-to-br from-amber-50 to-amber-100">
         <div className="container-custom">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold text-primary-900 mb-6">
+          <div className="max-w-2xl mx-auto text-center animate-fade-in">
+            <h2 className="text-4xl lg:text-5xl font-bold text-red-800 mb-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
               Schedule Technical Support
             </h2>
-            <p className="text-lg text-primary-600 mb-8">
+            <p className="text-lg text-red-700 mb-8 animate-slide-up" style={{ animationDelay: '400ms' }}>
               To book an engineer visit, arrange maintenance training, or discuss your technical requirements, 
               contact our support team for prompt assistance.
             </p>
-            <div className="space-y-4">
-              <p className="text-primary-700">
+            <div className="space-y-4 animate-slide-up" style={{ animationDelay: '600ms' }}>
+              <p className="text-red-700">
                 <strong>Technical Support:</strong> +91-98250 00000
               </p>
-              <p className="text-primary-700">
+              <p className="text-red-700">
                 <strong>Email:</strong> support@bajrangindustries.com
               </p>
               <div className="mt-8">

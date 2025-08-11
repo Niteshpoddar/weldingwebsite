@@ -11,8 +11,8 @@
 
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #faf9f7;
-    color: #1e293b;
+    background-color: #fefce8;
+    color: #7f1d1d;
     line-height: 1.6;
   }
 
@@ -25,29 +25,105 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 transform hover:scale-105 shadow-lg hover:shadow-xl;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-white hover:bg-luxury-pearl text-primary-700 font-medium rounded-lg border border-primary-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white hover:bg-accent-50 text-primary-800 font-medium rounded-lg border border-primary-200 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 transform hover:scale-105 shadow-md hover:shadow-lg;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-primary-100;
+    @apply bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-accent-200 hover:border-accent-300 transform hover:-translate-y-1;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-white border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+    @apply w-full px-4 py-3 bg-white border border-accent-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500 transition-all duration-300 hover:border-accent-300;
   }
 
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+
+  .hero-gradient {
+    background-image: url('/welding-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(250, 249, 247, 0.4) 0%, rgba(245, 245, 220, 0.35) 100%);
+    z-index: 1;
+  }
+
+  .hero-gradient > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Glassmorphism Navigation Styles */
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+
+  .glass-nav-scrolled {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .hero-title {
+    animation: heroSlideUp 0.8s ease-out forwards;
+    @apply text-primary-900;
+  }
+
+  .hero-subtitle {
+    animation: heroSlideUp 0.8s ease-out 0.2s forwards;
+    opacity: 0;
+    @apply text-primary-700;
+  }
+
+  .hero-cta {
+    animation: heroSlideUp 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+  }
+
+  @keyframes heroSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section-bg {
+    @apply bg-white;
+  }
+
+  .accent-bg {
+    @apply bg-gradient-to-r from-luxury-cream to-luxury-lightBeige;
+  }
 }
 
 @layer utilities {
   .text-gradient {
-    background: linear-gradient(135deg, #334155 0%, #64748b 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #eab308 50%, #3b82f6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -56,7 +132,27 @@
   .glass-effect {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(254, 252, 232, 0.9);
+    border: 1px solid rgba(239, 68, 68, 0.2);
   }
+
+  .golden-glow {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+
+  .beige-bg {
+    background-color: #fefce8;
+  }
+
+  .warm-beige-bg {
+    background-color: #fef9c3;
+  }
+}
+
+/* Line clamping utilities */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

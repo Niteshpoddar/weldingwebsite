@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { sendTrainingRegistrationEmail } from '../../../lib/mailer'
 import { connectToDatabase } from "../../dbconfig/dbconfig";
 import TrainingApplication from '../../models/trainingApplication';
+import { writeFile } from 'fs/promises'
+import path from 'path'
 
 await connectToDatabase();
 
@@ -16,6 +18,7 @@ export async function POST(req) {
         const trainingType = formData.get("trainingType");
         const participants = formData.get("participants");
         const message = formData.get("message");
+        const resume = formData.get("resume");
     
 
     // Basic validation
@@ -40,8 +43,49 @@ export async function POST(req) {
     if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
       return NextResponse.json(
         { success: false, error: 'Invalid phone number format' },
-        { status: 400 }
+        { status: 500 }
       )
+    }
+
+    let resumeUrl = null;
+
+    // Handle resume upload
+    if (resume) {
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+      if (!allowedTypes.includes(resume.type)) {
+        return NextResponse.json(
+          { success: false, error: 'Resume must be a PDF or Word document' },
+          { status: 400 }
+        )
+      }
+      if (resume.size > 5 * 1024 * 1024) {
+        return NextResponse.json(
+          { success: false, error: 'Resume file size must be less than 5MB' },
+          { status: 400 }
+        )
+      }
+
+      try {
+        // Generate unique filename
+        const timestamp = Date.now()
+        const originalName = resume.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+        const filename = `${timestamp}_${originalName}`
+        
+        // Save file to public/uploads directory
+        const bytes = await resume.arrayBuffer()
+        const buffer = Buffer.from(bytes)
+        const uploadDir = path.join(process.cwd(), 'public', 'uploads')
+        const filepath = path.join(uploadDir, filename)
+        
+        await writeFile(filepath, buffer)
+        resumeUrl = `/uploads/${filename}`
+      } catch (uploadError) {
+        console.error('Resume upload error:', uploadError)
+        return NextResponse.json(
+          { success: false, error: 'Failed to upload resume' },
+          { status: 500 }
+        )
+      }
     }
 
     // Send email
@@ -53,7 +97,8 @@ export async function POST(req) {
       course,
       trainingType,
       participants,
-      message
+      message,
+      resume
     })
 
     if (emailResult.success) {
@@ -65,7 +110,8 @@ export async function POST(req) {
         trainingCourse: course,
         trainingFormat: trainingType,
         numberOfParticipants: participants,
-        additionalRequirement: message
+        additionalRequirement: message,
+        resumeUrl: resumeUrl
       });
 
       

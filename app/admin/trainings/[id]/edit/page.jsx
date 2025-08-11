@@ -18,34 +18,26 @@ export default function EditTraining() {
   });
 
   useEffect(() => {
-    fetchTraining();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchTraining = async () => {
-    try {
-      const response = await fetch(`/api/admin/trainings/${params.id}`);
-      if (response.ok) {
-        const training = await response.json();
-        setFormData({
-          name: training.name || '',
-          duration: training.duration || '',
-          level: training.level || 'Technical',
-          description: training.description || '',
-          topics: training.topics && training.topics.length > 0 ? training.topics : ['']
-        });
-      } else {
-        alert('Training not found');
+    const fetchTraining = async () => {
+      try {
+        const response = await fetch(`/api/admin/trainings/${params.id}`, { credentials: 'include' });
+        if (response.ok) {
+          const training = await response.json();
+          setFormData(training);
+        } else {
+          alert('Training not found');
+          router.push('/admin/trainings');
+        }
+      } catch (error) {
+        console.error('Error fetching training:', error);
+        alert('Error loading training');
         router.push('/admin/trainings');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching training:', error);
-      alert('Error loading training');
-      router.push('/admin/trainings');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchTraining();
+  }, [params.id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -98,6 +90,7 @@ export default function EditTraining() {
           ...formData,
           topics: cleanTopics
         }),
+        credentials: 'include'
       });
 
       if (response.ok) {

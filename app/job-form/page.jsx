@@ -1,4 +1,5 @@
 import JobForm from '../../components/JobForm'
+import PageHero from '../../components/PageHero'
 
 export const metadata = {
   title: 'Job Application - Submit Your Application',
@@ -10,18 +11,16 @@ export default function JobFormPage({ searchParams }) {
 
   return (
     <div className="pt-20 lg:pt-24 min-h-screen bg-luxury-cream">
-      <div className="container-custom py-20">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-primary-900 mb-6">
-              Job Application
-            </h1>
-            <p className="text-lg text-primary-600">
-              Ready to join our team? Submit your application below and take the first step 
-              towards an exciting career opportunity.
-            </p>
-          </div>
-          
+      {/* Hero Section */}
+      <PageHero 
+        title="Job Application"
+        subtitle="Ready to join our team? Submit your application below and take the first step towards an exciting career opportunity."
+        showCTA={false}
+        className="min-h-[40vh]"
+      />
+      
+      <div className="container-custom py-8 lg:py-12">
+        <div className="max-w-3xl mx-auto">
           <JobForm position={position} />
         </div>
       </div>

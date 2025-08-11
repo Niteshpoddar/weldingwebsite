@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGO_URL;
+const MONGODB_URI = process.env.MONGO_URL || process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGODB_URI or MONGO_URL environment variable inside .env.local"
   );
 }
 
@@ -37,3 +37,10 @@ export async function connectToDatabase() {
 
   return cached.conn;
 }
+
+// Default export for the main function
+export default connectToDatabase;
+
+// Named exports for backward compatibility
+export const connectDB = connectToDatabase;
+export const dbConnect = connectToDatabase;

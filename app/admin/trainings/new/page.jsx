@@ -66,6 +66,7 @@ export default function NewTraining() {
           ...formData,
           topics: cleanTopics
         }),
+        credentials: 'include'
       });
 
       if (response.ok) {

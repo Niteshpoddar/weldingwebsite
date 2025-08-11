@@ -41,9 +41,13 @@ const trainingApplicationSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  resumeUrl: {
+    type: String, // store Cloudinary secure URL for resume uploads
+    trim: true
+  },
   status: {
     type: String,
-    enum: ['pending', 'reviewed', 'completed'],
+    enum: ['pending', 'reviewed', 'rejected', 'accepted'],
     default: 'pending'
   },
   appliedAt: {

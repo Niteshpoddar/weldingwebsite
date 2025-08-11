@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Button from './Button'
 import { isValidEmail, isValidPhone } from '../lib/utils'
+import { CheckCircleIcon } from '@heroicons/react/24/outline'
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -35,9 +36,10 @@ export default function ContactForm() {
     } else if (!isValidEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email address'
     }
+    if (!formData.company.trim()) newErrors.company = 'Company is required'
     if (!formData.message.trim()) newErrors.message = 'Message is required'
-    if (formData.phone && !isValidPhone(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number'
+    if (formData.phone && !formData.phone.match(/^\+91\d{10}$/)) {
+      newErrors.phone = 'Phone number must be in format +919876543210 (10 digits after +91)'
     }
 
     setErrors(newErrors)
@@ -52,7 +54,7 @@ export default function ContactForm() {
     setLoading(true)
     form.append("name", formData.name);
     form.append("email", formData.email);
-    form.append("phone", parseInt(formData.phone, 10));
+    form.append("phone", formData.phone || '');
     form.append("company", formData.company);
     form.append("message", formData.message);
     try {
@@ -85,12 +87,14 @@ export default function ContactForm() {
 
   if (success) {
     return (
-      <div className="card p-8 text-center">
-        <div className="text-6xl mb-4">✅</div>
+      <div className="card p-8 text-center animate-scale-in">
+        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center animate-bounce-gentle">
+          <CheckCircleIcon className="w-8 h-8 text-green-600" />
+        </div>
         <h3 className="text-2xl font-bold text-primary-900 mb-4">
           Message Sent Successfully!
         </h3>
-        <p className="text-primary-600 mb-6">
+        <p className="text-primary-700 mb-6">
           Thank you for contacting us. We'll get back to you within 24 hours.
         </p>
         <Button onClick={() => setSuccess(false)} variant="secondary">
@@ -101,9 +105,9 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card p-8 space-y-6">
+    <form onSubmit={handleSubmit} className="card p-8 space-y-6 animate-fade-in">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
+        <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
           <label htmlFor="name" className="block text-sm font-semibold text-primary-900 mb-2">
             Full Name *
           </label>
@@ -119,7 +123,7 @@ export default function ContactForm() {
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
         </div>
 
-        <div>
+        <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
           <label htmlFor="email" className="block text-sm font-semibold text-primary-900 mb-2">
             Email Address *
           </label>
@@ -137,9 +141,9 @@ export default function ContactForm() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
+        <div className="animate-slide-up" style={{ animationDelay: '300ms' }}>
           <label htmlFor="company" className="block text-sm font-semibold text-primary-900 mb-2">
-            Company Name
+            Company Name *
           </label>
           <input
             type="text"
@@ -147,12 +151,13 @@ export default function ContactForm() {
             name="company"
             value={formData.company}
             onChange={handleChange}
-            className="input-field"
+            className={`input-field ${errors.company ? 'border-red-500 focus:ring-red-500' : ''}`}
             placeholder="Your company name"
           />
+          {errors.company && <p className="mt-1 text-sm text-red-600">{errors.company}</p>}
         </div>
 
-        <div>
+        <div className="animate-slide-up" style={{ animationDelay: '400ms' }}>
           <label htmlFor="phone" className="block text-sm font-semibold text-primary-900 mb-2">
             Phone Number
           </label>
@@ -162,14 +167,15 @@ export default function ContactForm() {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
+            maxLength={13}
             className={`input-field ${errors.phone ? 'border-red-500 focus:ring-red-500' : ''}`}
-            placeholder="+1 (234) 567-890"
+            placeholder="+919876543210"
           />
           {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
         </div>
       </div>
 
-      <div>
+      <div className="animate-slide-up" style={{ animationDelay: '500ms' }}>
         <label htmlFor="message" className="block text-sm font-semibold text-primary-900 mb-2">
           Message *
         </label>
@@ -186,12 +192,12 @@ export default function ContactForm() {
       </div>
 
       {errors.submit && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg animate-slide-up">
           <p className="text-sm text-red-600">{errors.submit}</p>
         </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-end animate-slide-up" style={{ animationDelay: '600ms' }}>
         <Button 
           type="submit" 
           loading={loading}

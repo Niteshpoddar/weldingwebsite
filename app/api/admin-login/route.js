@@ -44,14 +44,27 @@ export async function POST(request) {
       success: true,
     });
 
+    // Debug logging
+    console.log('Setting admin-session cookie');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('Cookie settings:', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 60 * 60 * 24,
+      path: '/',
+    });
+
     response.cookies.set("admin-session", 'authenticated', {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 *60 *24,
-      path:'/',
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 60 * 60 * 24,
+      path: '/',
     });
 
+    console.log('Cookie set successfully');
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
     return response;
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

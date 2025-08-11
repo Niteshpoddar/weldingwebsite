@@ -10,7 +10,7 @@ export default function LoadingSpinner({ size = 'md', className = '' }) {
     <div className={`flex items-center justify-center ${className}`}>
       <div className={`${sizes[size]} animate-spin`}>
         <svg 
-          className="w-full h-full text-primary-600" 
+          className="w-full h-full text-primary-500" 
           fill="none" 
           viewBox="0 0 24 24"
         >

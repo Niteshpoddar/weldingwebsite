@@ -12,7 +12,7 @@ export default function RegisterScrollButton({ children, className = '' }) {
   return (
     <button
       type="button"
-      className={`${className} btn-secondary w-full group-hover:bg-primary-50`}
+      className={`${className} btn-secondary w-full group-hover:bg-accent-100 group-hover:border-accent-300 transition-all duration-300 hover:scale-105`}
       onClick={handleClick}
     >
       {children}

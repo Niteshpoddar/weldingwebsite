@@ -3,32 +3,53 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 
 export const metadata = {
-  title: {
-    default: 'Catalogue Website - Premium Solutions',
-    template: '%s | Catalogue Website'
+  metadataBase: new URL('http://localhost:3000'),
+  alternates: {
+    canonical: '/',
   },
-  description: 'Discover premium products and services with our comprehensive catalogue. Excellence, innovation, and quality in every solution.',
-  keywords: 'catalogue, products, services, premium, solutions, quality, innovation',
-  authors: [{ name: 'Catalogue Website Team' }],
-  creator: 'Catalogue Website',
-  publisher: 'Catalogue Website',
+  icons: {
+    icon: [
+      { url: '/abcdef.png', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    apple: '/abcdef.png',
+  },
   openGraph: {
+    default: 'Bajrang Industries - Premium Industrial Solutions',
+    template: '%s | Bajrang Industries',
     type: 'website',
-    locale: 'en_US',
-    url: 'https://yourwebsite.com',
-    title: 'Catalogue Website - Premium Solutions',
-    description: 'Discover premium products and services with our comprehensive catalogue.',
-    siteName: 'Catalogue Website',
+    description: 'Discover premium industrial roller solutions and engineering services with Bajrang Industries. Excellence, innovation, and quality in every solution.',
+    keywords: 'industrial rollers, rubber rollers, manufacturing, engineering, premium, solutions, quality, innovation',
+    authors: [{ name: 'Bajrang Industries Team' }],
+    creator: 'Bajrang Industries',
+    publisher: 'Bajrang Industries',
+    siteName: 'Bajrang Industries',
+    images: [
+      {
+        url: '/abcdef.png',
+        width: 128,
+        height: 128,
+        alt: 'Bajrang Industries Logo'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Catalogue Website - Premium Solutions',
-    description: 'Discover premium products and services with our comprehensive catalogue.',
-    creator: '@yourhandle',
+    title: 'Bajrang Industries - Premium Industrial Solutions',
+    description: 'Discover premium industrial roller solutions and engineering services with Bajrang Industries.',
+    siteName: 'Bajrang Industries',
+    images: ['/abcdef.png']
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 

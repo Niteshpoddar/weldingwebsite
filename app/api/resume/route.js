@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { writeFile } from 'fs/promises'
-import path from 'path'
+import cloudinary from '../../../lib/cloudinary.js'
 
 export async function POST(request) {
   try {
@@ -14,11 +13,11 @@ export async function POST(request) {
       )
     }
 
-    // Validate file type
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    // Validate file type - focus on PDF for better compatibility
+    const allowedTypes = ['application/pdf']
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { success: false, error: 'Only PDF and Word documents are allowed' },
+        { success: false, error: 'Only PDF documents are allowed for optimal viewing' },
         { status: 400 }
       )
     }
@@ -31,28 +30,51 @@ export async function POST(request) {
       )
     }
 
-    // Generate unique filename
-    const timestamp = Date.now()
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
-    const filename = `${timestamp}_${originalName}`
-    
-    // Save file to public/uploads directory
+    // Convert file to buffer
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads')
-    const filepath = path.join(uploadDir, filename)
-    
-    await writeFile(filepath, buffer)
+
+    // Upload to Cloudinary
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'raw',
+          folder: 'resumes',
+          format: 'pdf',
+          public_id: `resume_${Date.now()}`,
+          overwrite: true
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(buffer)
+    })
 
     return NextResponse.json({
       success: true,
-      filename: filename,
-      message: 'File uploaded successfully'
+      cloudinaryId: result.public_id,
+      url: result.secure_url,
+      filename: file.name,
+      message: 'File uploaded to Cloudinary successfully'
     })
   } catch (error) {
     console.error('File upload error:', error)
+    
+    // Provide more specific error messages
+    let errorMessage = 'File upload failed'
+    if (error.message.includes('CLOUDINARY')) {
+      errorMessage = 'Cloudinary configuration error. Please check your credentials.'
+    } else if (error.message.includes('validation')) {
+      errorMessage = 'Invalid file format or size.'
+    }
+    
     return NextResponse.json(
-      { success: false, error: 'File upload failed' },
+      { 
+        success: false, 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     )
   }
