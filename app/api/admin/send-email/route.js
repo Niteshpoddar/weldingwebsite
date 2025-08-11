@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '../../../dbconfig/dbconfig';
-import { sendEmail } from '../../../lib/mailer';
+import { sendEmail } from '../../../../lib/mailer';
 
 export async function POST(request) {
   try {

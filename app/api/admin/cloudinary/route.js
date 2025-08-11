@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import cloudinary from '../../../lib/cloudinary.js'
-import { deleteFromCloudinary, getFileInfo } from '../../../lib/cloudinaryUtils.js'
+import cloudinary from '../../../../lib/cloudinary.js'
+import { deleteFromCloudinary, getFileInfo } from '../../../../lib/cloudinaryUtils.js'
 
 // Middleware to check admin authentication
 const checkAdminAuth = async () => {
